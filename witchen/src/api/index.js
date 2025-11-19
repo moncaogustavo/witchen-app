@@ -1,11 +1,7 @@
-// PARTE DE JAVA API
+// API configuration
+const API_BASE_URL = 'http://localhost:3000/api';
 
-export const API_BASE = "http://SEU_BACKEND.com/api";
-
-
-export const endpoints = {
-login: `${API_BASE}/auth/login`,
-signup: `${API_BASE}/auth/signup`,
-mesas: `${API_BASE}/mesas`, // CRUD completo — adicionar no backend
-pedidos: `${API_BASE}/pedidos`,
+export const api = {
+  // API methods will be added here
 };
+
