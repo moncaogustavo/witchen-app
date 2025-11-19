@@ -109,3 +109,4 @@ witchen/
 2. Execute `npm start` para iniciar o servidor
 3. Escaneie o QR code com o Expo Go no seu celular
 4. Comece a desenvolver! 🎉
+# witchen-app
