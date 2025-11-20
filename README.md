@@ -40,4 +40,3 @@ witchen/
     ├── screens/          # Telas do aplicativo
     └── styles/           # Estilos globais
 ```
-# witchen-app
