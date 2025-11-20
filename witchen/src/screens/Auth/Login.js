@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { AuthContext } from '../../contexts/AuthContext';
 import { AnimatedButton } from '../../animations/Button';
 import { FadeInView } from '../../animations/FadeInView';
@@ -37,94 +38,158 @@ export default function Login({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+      <LinearGradient
+        colors={['#2D1B3D', '#4A2C5A', '#6B3D7A']}
+        style={styles.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
       >
-        <FadeInView style={styles.fadeContainer}>
-          <Text style={styles.title}>Smart Restaurant</Text>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <FadeInView style={styles.fadeContainer}>
+            {/* Logo/Ícone */}
+            <View style={styles.logoContainer}>
+              <Image 
+                source={require('../../../assets/logo.png')} 
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
+            </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#999"
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+            {/* Título */}
+            <Text style={styles.title}>Witchen</Text>
 
-          <AnimatedButton style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Entrar</Text>
-          </AnimatedButton>
+            {/* Campos de entrada */}
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              secureTextEntry
+              value={senha}
+              onChangeText={setSenha}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
 
-          <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
-            Criar Conta
-          </Text>
-        </FadeInView>
-      </ScrollView>
+            {/* Botão Entrar */}
+            <AnimatedButton style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>
+                Entrar
+              </Text>
+            </AnimatedButton>
+
+            {/* Link Criar Conta */}
+            <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
+              Criar Conta
+            </Text>
+          </FadeInView>
+        </ScrollView>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { 
-    flex: 1, 
-    backgroundColor: '#e2baee'
+    flex: 1
+  },
+  gradient: {
+    flex: 1,
+    width: '100%',
+    height: '100%'
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 20
+    padding: 30,
+    minHeight: '100%'
   },
   fadeContainer: {
-    flex: 1,
+    width: '100%',
+    alignItems: 'center'
+  },
+  logoContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
     justifyContent: 'center'
   },
+  logoImage: {
+    width: 120,
+    height: 120
+    // Se quiser que a imagem fique branca, adicione: tintColor: '#FFFFFF',
+  },
   title: { 
-    fontSize: 28, 
+    fontSize: 42, 
     fontWeight: 'bold', 
-    color: '#46075f', 
-    marginBottom: 30, 
-    textAlign: 'center' 
+    color: '#FFFFFF', 
+    marginBottom: 50, 
+    textAlign: 'center',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4
   },
   input: { 
-    backgroundColor: '#fff', 
-    padding: 15, 
-    borderRadius: 10, 
-    marginBottom: 15,
-    fontSize: 16,
-    minHeight: 50
+    backgroundColor: '#FFFFFF', 
+    paddingHorizontal: 24,
+    paddingVertical: 18,
+    borderRadius: 14, 
+    marginBottom: 22,
+    fontSize: 18,
+    height: 64,
+    width: '98%',
+    maxWidth: 600,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3
   },
   button: { 
-    backgroundColor: '#9b4cba', 
-    padding: 15, 
-    borderRadius: 10, 
-    marginTop: 10 
+    backgroundColor: '#4A2C5A', 
+    paddingVertical: 20,
+    paddingHorizontal: 48,
+    borderRadius: 14, 
+    marginTop: 18,
+    minHeight: 64,
+    width: '98%',
+    maxWidth: 600,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5
   },
   buttonText: { 
-    color: '#fff', 
+    color: '#FFFFFF', 
     textAlign: 'center', 
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 19,
+    letterSpacing: 0.5,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+    flexShrink: 0
   },
   link: { 
-    color: '#46075f', 
+    color: '#B19CD9', 
     textAlign: 'center', 
-    marginTop: 20, 
-    textDecorationLine: 'underline',
-    fontSize: 14
+    marginTop: 30, 
+    fontSize: 16,
+    fontWeight: '500'
   }
 });
 

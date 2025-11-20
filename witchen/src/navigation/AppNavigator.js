@@ -11,10 +11,36 @@ const Stack = createStackNavigator();
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={screenTransition}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="Home" component={Home} />
+      <Stack.Navigator 
+        screenOptions={{
+          ...screenTransition,
+          headerStyle: {
+            backgroundColor: '#2D1B3D',
+          },
+          headerTintColor: '#FFFFFF',
+          headerTitleStyle: {
+            fontWeight: '600',
+          },
+        }}
+      >
+        <Stack.Screen 
+          name="Login" 
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="Signup" 
+          component={Signup}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="Home" 
+          component={Home}
+          options={{ 
+            title: 'Home',
+            headerBackTitleVisible: false
+          }}
+        />
         <Stack.Screen name="About" component={About} />
       </Stack.Navigator>
     </NavigationContainer>
