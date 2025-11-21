@@ -11,19 +11,22 @@ export default function About({ navigation }) {
       id: 1,
       name: 'Eric Yoshida',
       rm: '558763',
-      description: 'Desenvolvedor Fullstack e Mago dos Códigos'
+      description: 'Desenvolvedor Fullstack e Mago dos Códigos',
+      Image: require('../../../assets/dev/eric.jpg')
     },
     {
       id: 2,
       name: 'Gustavo Monção',
       rm: '557515',
-      description: 'Desenvolvedor Fullstack e Mago dos Códigos'
+      description: 'Desenvolvedor Fullstack e Mago dos Códigos',
+      Image: require('../../../assets/dev/gustavo-moncao.jpg')
     },
     {
       id: 3,
       name: 'Gustavo Matias',
       rm: '555010',
-      description: 'Desenvolvedor Fullstack e Mago dos Códigos'
+      description: 'Desenvolvedor Fullstack e Mago dos Códigos',
+      Image: require('../../../assets/dev/gustavo-matias.jpg')
     }
   ];
 
@@ -56,7 +59,7 @@ export default function About({ navigation }) {
             {wizards.map((wizard) => (
               <View key={wizard.id} style={styles.wizardCard}>
                 <View style={styles.iconCircle}>
-                  <Ionicons name="person" size={40} color="#4A2C5A" />
+                  <Image source={wizard.Image} style={styles.devPhoto} />
                 </View>
                 <Text style={styles.wizardName}>{wizard.name}</Text>
                 <Text style={styles.wizardRM}>RM: {wizard.rm}</Text>
@@ -131,9 +134,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5E6D3',
     borderRadius: 20,
     padding: 20,
-    width: Platform.OS === 'web' ? '28%' : '30%',
-    minWidth: 110,
-    maxWidth: 150,
+    width: Platform.OS === 'web' ? '28%' : '80%',
+    minWidth: 170,
+    maxWidth: 260,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#E8D5B7',
     marginBottom: 20,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     overflow: 'hidden'
   },
   iconCircle: {
@@ -213,5 +216,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     letterSpacing: 0.5
+  },
+  devPhoto: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 35,
+    resiceMode: 'cover'
   }
 });
