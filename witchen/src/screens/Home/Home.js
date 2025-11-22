@@ -46,7 +46,7 @@ export default function Home({ navigation }) {
             >
               <View style={styles.buttonContent}>
                 <Ionicons name="color-wand-outline" size={24} color="#FFFFFF" style={styles.buttonIcon} />
-                <Text style={styles.menuButtonText}>Status das Mesas</Text>
+                <Text style={styles.menuButtonText}>Cadastrar Pedido</Text>
               </View>
             </AnimatedButton>
 
@@ -62,11 +62,11 @@ export default function Home({ navigation }) {
 
             <AnimatedButton 
               style={styles.menuButton} 
-              onPress={() => navigation.navigate('Metrics')}
+              onPress={() => navigation.navigate('Comandas')}
             >
               <View style={styles.buttonContent}>
                 <Ionicons name="flash-outline" size={24} color="#FFFFFF" style={styles.buttonIcon} />
-                <Text style={styles.menuButtonText}>Métricas</Text>
+                <Text style={styles.menuButtonText}>Apenas Bruxos</Text>
               </View>
             </AnimatedButton>
 
@@ -189,3 +189,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5
   }
 });
+

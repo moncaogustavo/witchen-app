@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
-    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif'
   },
   cardsContainer: {
     flexDirection: 'row',
