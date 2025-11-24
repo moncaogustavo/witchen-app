@@ -192,19 +192,23 @@ export async function cancelarPedido(pedidoId) {
 export async function fecharComanda(comandaId, metodoPagamento) {
   try {
     const response = await fetch(
-      `${BASE_URL}/Comanda/${comandaId}/fechar?metodoPagamento=${metodoPagamento}`,
+      `${BASE_URL}/comanda/${comandaId}/fechar?metodoPagamento=${encodeURIComponent(metodoPagamento)}`,
       {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
       }
     );
 
-    if (!response.ok)
-      throw new Error(`Erro ao fechar comanda: ${response.status}`);
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Erro fecharComanda:", response.status, text);
+      throw new Error(`Erro ao fechar comanda: ${response.status} ${text}`);
+    }
 
     return await response.json();
   } catch (error) {
-    console.error("Erro fecharComanda:", error);
-    return null;
+    console.error("Erro ao chamar fecharComanda:", error);
+    throw error;
   }
 }
 

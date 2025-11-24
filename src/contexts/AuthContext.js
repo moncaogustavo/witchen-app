@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setLogado(false);
     await AsyncStorage.removeItem("@user");
-    router.replace("/login"); // redireciona pro login
+    router.replace("/screens/Auth/Login"); // redireciona pro login
   };
 
   return (
