@@ -77,21 +77,6 @@ export default function Home() {
 
             <AnimatedButton
               style={styles.menuButton}
-              onPress={() => router.push("/screens/Comanda/Comandas")}
-            >
-              <View style={styles.buttonContent}>
-                <Ionicons
-                  name="flash-outline"
-                  size={24}
-                  color="#FFFFFF"
-                  style={styles.buttonIcon}
-                />
-                <Text style={styles.menuButtonText}>Apenas Bruxos</Text>
-              </View>
-            </AnimatedButton>
-
-            <AnimatedButton
-              style={styles.menuButton}
               onPress={() => router.push("/screens/Sobre/About")}
             >
               <View style={styles.buttonContent}>

@@ -8,18 +8,98 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { fetchMesas } from "../../../src/api/index";
+
+import {
+  fetchMesas,
+  abrirOuObterComanda,
+  obterComandaAtiva,
+  fecharComanda,
+  listarPedidosDaComanda, // ✅ já existe na sua API
+} from "../../../src/api";
+
+import { AnimatedButton } from "../../../src/animations/Button";
 
 export default function Mesas() {
   const router = useRouter();
   const [mesas, setMesas] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const carregarMesas = async () => {
+    try {
+      setLoading(true);
+
+      const mesasData = await fetchMesas();
+
+      const mesasComComanda = await Promise.all(
+        mesasData.map(async (mesa) => {
+          try {
+            const comanda = await obterComandaAtiva(mesa.idMesa);
+
+            if (comanda && comanda.idComanda) {
+              const pedidos = await listarPedidosDaComanda(comanda.idComanda);
+
+              return {
+                ...mesa,
+                comandaAtiva: comanda,
+                pedidos: pedidos || [],
+              };
+            }
+
+            return {
+              ...mesa,
+              comandaAtiva: null,
+              pedidos: [],
+            };
+          } catch (error) {
+            console.error("Erro ao carregar comanda/pedidos:", error);
+
+            return {
+              ...mesa,
+              comandaAtiva: null,
+              pedidos: [],
+            };
+          }
+        })
+      );
+
+      setMesas(mesasComComanda);
+    } catch (error) {
+      console.error("Erro fetchMesas:", error);
+      alert("Não foi possível carregar as mesas. Tente novamente mais tarde.");
+      setMesas([]); // garante que a lista não fique indefinida
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchMesas()
-      .then(setMesas)
-      .finally(() => setLoading(false));
+    carregarMesas();
   }, []);
+
+  const handleAbrirOuEntrarComanda = async (mesaId) => {
+    try {
+      const comanda = await abrirOuObterComanda(mesaId);
+
+      const comandaId = comanda?.idComanda ?? comanda?.id ?? null;
+      if (!comandaId) return;
+
+      router.push(`/screens/Pedidos/AdicionarPedido?comandaId=${comandaId}`);
+    } catch (error) {
+      console.error("Erro ao abrir/entrar na comanda:", error);
+      alert("Erro ao abrir ou acessar a comanda.");
+    }
+  };
+
+  const handleFecharComanda = async (comandaId) => {
+    try {
+      await fecharComanda(comandaId);
+      alert("Comanda fechada com sucesso!");
+      carregarMesas();
+    } catch (error) {
+      console.error("Erro ao fechar comanda:", error);
+      alert("Erro ao fechar a comanda.");
+    }
+  };
 
   if (loading) {
     return (
@@ -34,39 +114,72 @@ export default function Mesas() {
       <Text style={styles.pageTitle}>Mesas Disponíveis</Text>
 
       <FlatList
-        contentContainerStyle={styles.listContent}
         data={mesas}
-        keyExtractor={(item, index) =>
-          item?.id?.toString() || item?.idMesa?.toString() || String(index)
-        }
+        keyExtractor={(item) => item.idMesa.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={styles.title}>Mesa {item.numero}</Text>
+
               <Text
                 style={[
                   styles.status,
-                  item.status?.toLowerCase() === "ocupada"
-                    ? styles.ocupada
-                    : styles.disponivel,
+                  item.comandaAtiva ? styles.ocupada : styles.disponivel,
                 ]}
               >
-                {item.status}
+                {item.comandaAtiva ? "Ocupada" : "Disponível"}
               </Text>
             </View>
 
+            {/* PEDIDOS */}
+            {item.pedidos.length > 0 && (
+              <View style={styles.pedidosContainer}>
+                <Text style={styles.subtitulo}>Pedidos atuais:</Text>
+
+                {item.pedidos.map((pedido, index) => (
+                  <Text key={index} style={styles.pedido}>
+                    • Pedido #{pedido.idPedido} — {pedido.status} — Total: R$
+                    {pedido.total}
+                  </Text>
+                ))}
+              </View>
+            )}
+
             <TouchableOpacity
               style={styles.button}
-              onPress={() => router.push(`/comandas?mesaId=${item.id}`)}
+              onPress={() => handleAbrirOuEntrarComanda(item.idMesa)}
             >
-              <Text style={styles.buttonText}>Adicionar pedido</Text>
+              <Text style={styles.buttonText}>
+                {item.comandaAtiva ? "Adicionar pedido" : "Abrir comanda"}
+              </Text>
             </TouchableOpacity>
+
+            {item.comandaAtiva && (
+              <TouchableOpacity
+                style={[styles.button, styles.fecharButton]}
+                onPress={() => handleFecharComanda(item.comandaAtiva.idComanda)}
+              >
+                <Text style={styles.buttonText}>Fechar comanda</Text>
+              </TouchableOpacity>
+            )}
+
+            <View style={styles.buttonsContainer}>
+              <AnimatedButton
+                style={styles.backButton}
+                onPress={() => router.push("/screens/Home/Home")}
+              >
+                <Text style={styles.backButtonText}>
+                  Voltar para o Caldeirão
+                </Text>
+              </AnimatedButton>
+            </View>
           </View>
         )}
       />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -160,5 +273,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 0.5,
+  },
+  buttonsContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingHorizontal: 40,
+    marginTop: 20,
+  },
+  backButton: {
+    backgroundColor: "#4A2C5A",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 14,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+    justifyContent: "center",
+    alignSelf: "stretch",
+  },
+  backButtonText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.5,
+  },
+  pedidosContainer: {
+    marginTop: 10,
+  },
+  subtitulo: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+  pedido: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    marginLeft: 10,
   },
 });

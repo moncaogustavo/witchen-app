@@ -7,11 +7,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { fetchProdutos } from "../../../src/api";
-
+import { AnimatedButton } from "../../../src/animations/Button";
+import { useRouter } from "expo-router";
 export default function Cardapio() {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
     fetchProdutos()
       .then(setProdutos)
@@ -53,13 +54,21 @@ export default function Cardapio() {
           </View>
         )}
       />
+      <View style={styles.buttonsContainer}>
+        <AnimatedButton
+          style={styles.backButton}
+          onPress={() => router.push("/screens/Home/Home")}
+        >
+          <Text style={styles.backButtonText}>Voltar para o Caldeirão</Text>
+        </AnimatedButton>
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2A1838", // fundo principal
+    backgroundColor: "#2A1838",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
@@ -115,5 +124,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#DADADA",
     lineHeight: 20,
+  },
+  buttonsContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingHorizontal: 40,
+    marginTop: 20,
+  },
+  backButton: {
+    backgroundColor: "#4A2C5A",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 14,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+    justifyContent: "center",
+    alignSelf: "stretch",
+  },
+  backButtonText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.5,
   },
 });
